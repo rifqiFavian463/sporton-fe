@@ -1,0 +1,25 @@
+"use client";
+import Image from "next/image";
+import { Button } from "../ui/button";
+import { FiRefreshCcw } from "react-icons/fi";
+import { useRouter } from "next/navigation";
+
+function OrderSubmitted() {
+  const { refresh } = useRouter();
+  const reloadOrderStatus = () => {
+    refresh();
+  };
+  return (
+    <div className="bg-white w-160 p-16 flex flex-col justify-center items-center mx-auto">
+      <Image src="/images/icon-order-submitted.svg" width={117} height={117} alt="icon order submitted" className="mb-4" />
+      <h2 className="text-2xl font-semibold mb-2">Order Submitted!!</h2>
+      <p className="text-center mb-8">Your Order is recorded in our system, we are still confirming the payment status, please wait and your order status will be updated in less than 12 hours.</p>
+      <Button variant={"dark"} className="w-full" onClick={reloadOrderStatus}>
+        <FiRefreshCcw />
+        Refresh
+      </Button>
+    </div>
+  );
+}
+
+export { OrderSubmitted };

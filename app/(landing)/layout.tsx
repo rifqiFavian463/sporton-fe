@@ -1,13 +1,31 @@
-import React from "react";
+import type { Metadata } from "next";
+import { Poppins } from "next/font/google";
+import "../globals.css";
+import { Footer } from "./components/layouts/footer";
 import { Header } from "./components/layouts/header";
+const poppins = Poppins({
+  variable: "--font-poppins",
+  display: "swap",
+  weight: ["400", "500", "600", "700", "800"],
+});
 
-function LandingLayout({ children }: { children: React.ReactNode }) {
+export const metadata: Metadata = {
+  title: "SportOn Website",
+  description: "Engineered for endurance and designed for speed. Experience gear that moves as fast as you do. Premium fabrics. Unmatched comfort. Limitless motion.",
+};
+
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
   return (
-    <>
-      <Header />
-      {children}
-    </>
+    <html lang="en">
+      <body className={`${poppins.variable} antialiased overflow-x-hidden`}>
+        <Header />
+        {children}
+        <Footer />
+      </body>
+    </html>
   );
 }
-
-export default LandingLayout;
