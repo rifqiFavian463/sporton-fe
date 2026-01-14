@@ -5,13 +5,46 @@ import { priceFormatter } from "@/app/utils/price-formatter";
 import { FiCheckCircle } from "react-icons/fi";
 import { Button } from "../ui/button";
 import { useRouter } from "next/navigation";
+import { useCartStore } from "@/app/hooks/use-store";
+import { useState } from "react";
+import { transactionCheckout } from "@/app/services/transaction.service";
 
 function PaymentSteps() {
   const { push } = useRouter();
+  const { items, customerInfo, reset } = useCartStore();
+  const [file, setFile] = useState<File | null>();
+  const totalPrice = items.reduce((total, item) => total + item.price * item.qty, 0);
+  const handleConfirmPayment = async () => {
+    if (!file) {
+      alert("Please upload your payment receipt!");
+      return;
+    }
 
-  const uploadAndConfirm = () => {
-    push("/order-status/s81nasjd012aka");
+    if (!customerInfo) {
+      alert("Customer information is missing, please return to checkout");
+      push("/checkout");
+      return;
+    }
+
+    try {
+      const formData = new FormData();
+      formData.append("customerName", customerInfo.customerName);
+      formData.append("customerContact", customerInfo.customerContact!.toString());
+      formData.append("customerAddress", customerInfo.customerAddress);
+      formData.append("image", file);
+      formData.append("purchasedItems", JSON.stringify(items.map((item) => ({ productId: item._id, qty: item.qty }))));
+      formData.append("totalPayment", totalPrice!.toString());
+
+      const res = await transactionCheckout(formData);
+
+      alert("Transaction created successfully!");
+      reset();
+      push(`/order-status/${res._id}`);
+    } catch (error) {
+      console.log(error);
+    }
   };
+
   return (
     <CardWithHeader title="Payment Steps">
       <div className="p-5">
@@ -26,14 +59,14 @@ function PaymentSteps() {
             Upload the payment receipt/screenshot using the <b>&apos;Upload Receipt & Confirm&apos;</b> button below to validate your transaction.
           </li>
         </ol>
-        <FileUpload />
+        <FileUpload onFileSelect={setFile} />
       </div>
       <div className="border-t border-gray-200 p-4">
         <div className="flex justify-between">
           <div className="font-semibold text-sm">Total</div>
-          <div className="text-primary">{priceFormatter(450000)}</div>
+          <div className="text-primary">{priceFormatter(totalPrice)}</div>
         </div>
-        <Button variant={"dark"} className="w-full mt-4" onClick={uploadAndConfirm}>
+        <Button variant={"dark"} className="w-full mt-4" onClick={handleConfirmPayment}>
           <FiCheckCircle size={24} />
           Upload Receipt & Confirm
         </Button>
