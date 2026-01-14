@@ -10,7 +10,7 @@ function CartPopup() {
   const { push } = useRouter();
   const { items, removeItem } = useCartStore();
   const handleCheckout = () => {
-    push("/payment");
+    push("/checkout");
   };
   const totalPrice = items.reduce((total, product) => total + product.price * product.qty, 0);
   return (

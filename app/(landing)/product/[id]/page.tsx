@@ -12,7 +12,6 @@ type ProductDetailProps = {
 async function ProductDetail({ params }: ProductDetailProps) {
   const { id } = await params;
   const product = await getProductDetail(id);
-  console.log(product);
   return (
     <main className="container mx-auto py-40 flex gap-12">
       <div className="bg-primary-light aspect-square min-w-140 flex justify-center items-center">
