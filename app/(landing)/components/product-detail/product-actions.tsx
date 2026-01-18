@@ -40,7 +40,14 @@ function ProductActions({ product, stock }: ProductActionsProps) {
         <FiShoppingBag size={24} />
         Add to Cart
       </Button>
-      <Button variant="dark" className="w-full" onClick={() => push("/checkout")}>
+      <Button
+        variant="dark"
+        className="w-full"
+        onClick={() => {
+          addItem(product, qty);
+          push("/checkout");
+        }}
+      >
         Checkout Now
         <FiArrowRight size={24} />
       </Button>
